@@ -22,7 +22,7 @@ layout(location = 0) out vec4 color;
 
 in vec2 v_TexCoord;
 
-uniform vec4 u_Color;
+uniform vec4 u_Color; // 被用于调整颜色，如果没有用到，会被编译器优化掉，
 uniform sampler2D u_Texture;
 
 void main()

@@ -55,7 +55,7 @@ void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix)
 	{
 		return m_UniformLocationCache[name];
 	}
-
+	//找到 定义的Uniform类型变量
 	int location = glGetUniformLocation(m_RendererID, name.c_str());
 	if (location == -1)
 		std::cout << "Warning: uniform '" << name << "'doesn't exist!" << std::endl;

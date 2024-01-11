@@ -142,13 +142,13 @@ int main(void)
 		//	 0.5f,  0.5f,  0.0f, 1.0f, 1.0f,
 		//	-0.5f,  0.5f,  0.0f, 0.0f, 1.0f
 		//};
-
+		
 		float positions[] =
 		{
-			100.0f, 100.0f,  0.0f, 0.0f, 0.0f,
-			200.0f, 100.0f,  0.0f, 1.0f, 0.0f,
-			200.0f, 200.0f,  0.0f, 1.0f, 1.0f,
-			100.0f, 200.0f,  0.0f, 0.0f, 1.0f
+			-50.0f, -50.0f,  0.0f, 0.0f, 0.0f,
+			 50.0f, -50.0f,  0.0f, 1.0f, 0.0f,
+			 50.0f,  50.0f,  0.0f, 1.0f, 1.0f,
+			-50.0f,  50.0f,  0.0f, 0.0f, 1.0f
 		};
 
 		unsigned int indices[] =
@@ -157,6 +157,9 @@ int main(void)
 			2, 3, 0,
 		};
 
+
+
+		// 开启混合
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -173,9 +176,11 @@ int main(void)
 
 		IndexBuffer ib(indices, 6);
 
+		//
 		//glm::mat4 proj = glm::ortho(2.0f, -2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
 		glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0), glm::vec3(-100, 0, 0));
+		
+		glm::mat4 view = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, 0)); // 世界中的物体向左移动100单位，相当于摄像机向右移动100单位。
 
 
 
@@ -231,8 +236,52 @@ int main(void)
 		ImGui::StyleColorsDark();
 		//ImGui::StyleColorsClassic();
 
-		glm::vec3 translation(200, 200, 0);
 
+		glm::vec3 translationA(200, 200, 0);
+		glm::vec3 translationB(400, 200, 0);
+
+
+#if 0 
+		float positions2[] =
+		{
+			100.0f, 100.0f,  0.0f, 0.0f, 0.0f,
+			200.0f, 100.0f,  0.0f, 1.0f, 0.0f,
+			200.0f, 200.0f,  0.0f, 1.0f, 1.0f,
+			100.0f, 200.0f,  0.0f, 0.0f, 1.0f
+		};
+
+		unsigned int indices2[] =
+		{
+			0, 1, 2,
+			2, 3, 0,
+		};
+
+		VertexArray va2;
+		VertexBuffer vb2(positions2, sizeof(positions2));
+
+		VertexBufferLayout layout2;
+		layout2.Push<float>(3);
+		layout2.Push<float>(2);
+		va2.AddBuffer(vb2, layout2);
+
+		IndexBuffer ib2(indices2, 6);
+
+		Shader shader2("res/shaders/Basic.shader");
+		shader2.Bind();
+		shader2.SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
+
+		Texture tt2("res/textures/ChernoLogo.png");
+		//Texture tt("res/textures/RedHeart.jpg");
+		tt2.Bind();
+
+		va2.Unbind();
+		vb2.Unbind();
+		ib2.Unbind();
+		shader2.Unbind();
+
+		Renderer renderer2;
+		glm::vec3 translation2(400, 200, 0);
+#endif //第二个图形
 
 		float r = 0.f;
 		float increment = 0.05f;
@@ -248,17 +297,45 @@ int main(void)
 
 			ImGui_ImplGlfwGL3_NewFrame();
 
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), translation);
-
-			glm::mat4 mvp = proj * view * model;
 
 
+			{
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA); //坐标变换 移动translation个单位
+				glm::mat4 mvp = proj * view * model;
+				shader.Bind();
+				shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+				shader.SetUniformMat4f("u_MVP", mvp);
 
-			shader.Bind();
-			shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-			shader.SetUniformMat4f("u_MVP", mvp);
+				renderer.Draw(va, ib, shader);
+			}
+			{
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB); //坐标变换 移动translation个单位
+				glm::mat4 mvp = proj * view * model;
+				shader.Bind();
+				shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+				shader.SetUniformMat4f("u_MVP", mvp);
 
-			renderer.Draw(va, ib, shader);
+				renderer.Draw(va, ib, shader);
+			}
+
+
+
+
+
+#if 0
+			//renderer2.clear();
+			glm::mat4 model2 = glm::translate(glm::mat4(1.0f), translation2);
+			glm::mat4 mvp2 = proj * view * model2;
+
+
+
+			shader2.Bind();
+			shader2.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
+			shader2.SetUniformMat4f("u_MVP", mvp2);
+
+			renderer2.Draw(va2, ib2, shader2);
+#endif // 第二个图形
+
 
 			if (r > 1.0f)
 				increment = -0.05f;
@@ -267,7 +344,8 @@ int main(void)
 			r += increment;
 
 			{
-				ImGui::SliderFloat3("Translation", &translation.y, 0.0f, 960.0f);            // Edit 1 float using a slider from 0.0f to 1.0f  
+				ImGui::SliderFloat3("Translation A ", &translationA.x, 0.0f, 960.f);            // Edit 1 float using a slider from 0.0f to 1.0f  
+				ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.f);            // Edit 1 float using a slider from 0.0f to 1.0f  
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			}
 
