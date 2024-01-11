@@ -11,6 +11,7 @@ namespace test {
 		Test() {}
 		virtual ~Test() {}
 
+		//该处用虚函数而不是用纯虚函数，是因为有的地方别的类可能用不到，就不用重写了
 		virtual void OnUpdate(float deltaTime) {}
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}
