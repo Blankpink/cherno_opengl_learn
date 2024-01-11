@@ -18,6 +18,9 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 
+// #include "tests/Test.h"
+#include "tests/TestClearColor.h"
+
 
 struct ShaderProgramSource
 {
@@ -135,97 +138,10 @@ int main(void)
 
 	std::cout << glGetString(GL_VERSION) << std::endl;
 	{
-		//float positions[] =
-		//{
-		//	-0.5f, -0.5f,  0.0f, 0.0f, 0.0f,
-		//	 0.5f, -0.5f,  0.0f, 1.0f, 0.0f,
-		//	 0.5f,  0.5f,  0.0f, 1.0f, 1.0f,
-		//	-0.5f,  0.5f,  0.0f, 0.0f, 1.0f
-		//};
-		
-		float positions[] =
-		{
-			-50.0f, -50.0f,  0.0f, 0.0f, 0.0f,
-			 50.0f, -50.0f,  0.0f, 1.0f, 0.0f,
-			 50.0f,  50.0f,  0.0f, 1.0f, 1.0f,
-			-50.0f,  50.0f,  0.0f, 0.0f, 1.0f
-		};
-
-		unsigned int indices[] =
-		{
-			0, 1, 2,
-			2, 3, 0,
-		};
-
-
-
 		// 开启混合
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		VertexArray va;
-
-		//定义顶点缓冲区（Vertex Buffer）,第一个4指4个顶点，第二个4指每个顶点4个float
-		//VertexBuffer vb(positions, 4 * 4 * sizeof(float));
-		VertexBuffer vb(positions, sizeof(positions));
-
-		VertexBufferLayout layout;
-		layout.Push<float>(3);
-		layout.Push<float>(2);
-		va.AddBuffer(vb, layout);
-
-		IndexBuffer ib(indices, 6);
-
-		//
-		//glm::mat4 proj = glm::ortho(2.0f, -2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
-		glm::mat4 proj = glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f);
-		
-		glm::mat4 view = glm::translate(glm::mat4(1.0), glm::vec3(0, 0, 0)); // 世界中的物体向左移动100单位，相当于摄像机向右移动100单位。
-
-
-
-#if 0
-		std::string vertexShader =
-			"#version 330 core\n"
-			"\n"
-			"layout(location = 0) in vec4 position;"
-			"\n"
-			"void main()\n"
-			"{"
-			"	gl_Position = position;\n"
-			"}\n"
-			;
-
-		std::string fragmentShader =
-			"#version 330 core\n"
-			"\n"
-			"layout(location = 0) out vec4 color;"
-			"\n"
-			"void main()\n"
-			"{"
-			"	color = vec4(1.0, 0.0, 0.0, 1.0);\n"
-			"}\n"
-			;
-		unsigned int shader = CreateShader(vertexShader, fragmentShader);
-		glUseProgram(shader);
-#endif // 原始着色器编写方式
-
-#if 1
-
-
-		Shader shader("res/shaders/Basic.shader");
-		shader.Bind();
-		shader.SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
-
-		Texture tt("res/textures/ChernoLogo.png");
-		//Texture tt("res/textures/RedHeart.jpg");
-		tt.Bind();
-		shader.SetUniform1i("u_Texture", 0);
-
-		va.Unbind();
-		vb.Unbind();
-		ib.Unbind();
-		shader.Unbind();
 
 		Renderer renderer;
 
@@ -236,57 +152,11 @@ int main(void)
 		ImGui::StyleColorsDark();
 		//ImGui::StyleColorsClassic();
 
-
-		glm::vec3 translationA(200, 200, 0);
-		glm::vec3 translationB(400, 200, 0);
-
-
-#if 0 
-		float positions2[] =
-		{
-			100.0f, 100.0f,  0.0f, 0.0f, 0.0f,
-			200.0f, 100.0f,  0.0f, 1.0f, 0.0f,
-			200.0f, 200.0f,  0.0f, 1.0f, 1.0f,
-			100.0f, 200.0f,  0.0f, 0.0f, 1.0f
-		};
-
-		unsigned int indices2[] =
-		{
-			0, 1, 2,
-			2, 3, 0,
-		};
-
-		VertexArray va2;
-		VertexBuffer vb2(positions2, sizeof(positions2));
-
-		VertexBufferLayout layout2;
-		layout2.Push<float>(3);
-		layout2.Push<float>(2);
-		va2.AddBuffer(vb2, layout2);
-
-		IndexBuffer ib2(indices2, 6);
-
-		Shader shader2("res/shaders/Basic.shader");
-		shader2.Bind();
-		shader2.SetUniform4f("u_Color", 0.2f, 0.3f, 0.8f, 1.0f);
-
-		Texture tt2("res/textures/ChernoLogo.png");
-		//Texture tt("res/textures/RedHeart.jpg");
-		tt2.Bind();
-
-		va2.Unbind();
-		vb2.Unbind();
-		ib2.Unbind();
-		shader2.Unbind();
-
-		Renderer renderer2;
-		glm::vec3 translation2(400, 200, 0);
-#endif //第二个图形
-
 		float r = 0.f;
 		float increment = 0.05f;
 
-#endif // 解析文件的方式编写着色器
+		test::TestClearColor test;
+
 
 		//glViewport(0, 0, 640, 480);
 
@@ -295,61 +165,11 @@ int main(void)
 		{
 			renderer.clear();
 
+			test.OnUpdate(0.0f);
+			test.OnRender();
+
 			ImGui_ImplGlfwGL3_NewFrame();
-
-
-
-			{
-				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA); //坐标变换 移动translation个单位
-				glm::mat4 mvp = proj * view * model;
-				shader.Bind();
-				shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-				shader.SetUniformMat4f("u_MVP", mvp);
-
-				renderer.Draw(va, ib, shader);
-			}
-			{
-				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB); //坐标变换 移动translation个单位
-				glm::mat4 mvp = proj * view * model;
-				shader.Bind();
-				shader.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-				shader.SetUniformMat4f("u_MVP", mvp);
-
-				renderer.Draw(va, ib, shader);
-			}
-
-
-
-
-
-#if 0
-			//renderer2.clear();
-			glm::mat4 model2 = glm::translate(glm::mat4(1.0f), translation2);
-			glm::mat4 mvp2 = proj * view * model2;
-
-
-
-			shader2.Bind();
-			shader2.SetUniform4f("u_Color", r, 0.3f, 0.8f, 1.0f);
-			shader2.SetUniformMat4f("u_MVP", mvp2);
-
-			renderer2.Draw(va2, ib2, shader2);
-#endif // 第二个图形
-
-
-			if (r > 1.0f)
-				increment = -0.05f;
-			else if (r < 0.0f)
-				increment = 0.05f;
-			r += increment;
-
-			{
-				ImGui::SliderFloat3("Translation A ", &translationA.x, 0.0f, 960.f);            // Edit 1 float using a slider from 0.0f to 1.0f  
-				ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 960.f);            // Edit 1 float using a slider from 0.0f to 1.0f  
-				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			}
-
-			// ImGui Rendering
+			test.OnImGuiRender();
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
