@@ -150,12 +150,16 @@ int main(void)
 		ImGui_ImplGlfwGL3_Init(window, true);
 		// Setup style
 		ImGui::StyleColorsDark();
-		//ImGui::StyleColorsClassic();
+		ImGui::StyleColorsClassic();
 
-		float r = 0.f;
-		float increment = 0.05f;
+		test::Test* currentTest = nullptr;
+		test::TestMenu* testMenu = new test::TestMenu(currentTest);
+		currentTest = testMenu;
 
-		test::TestClearColor test;
+		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+
+
+		//test::TestClearColor test;
 
 
 		//glViewport(0, 0, 640, 480);
@@ -163,13 +167,32 @@ int main(void)
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
 		{
+			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			renderer.clear();
 
-			test.OnUpdate(0.0f);
-			test.OnRender();
+			//test.OnUpdate(0.0f);
+			//test.OnRender();
 
 			ImGui_ImplGlfwGL3_NewFrame();
-			test.OnImGuiRender();
+
+			if (currentTest)
+			{
+				currentTest->OnUpdate(0.0f);
+				//需要把ImGui::Begin("Test", 0, 0);放在currentTest->OnRender();前面
+				ImGui::Begin("Test", 0, 0);
+				currentTest->OnRender();
+
+				if (currentTest != testMenu && ImGui::Button("<-"))
+				{
+					delete currentTest;
+					currentTest = testMenu;
+				}
+				currentTest->OnImGuiRender();
+				ImGui::End();
+			}
+
+
+			//test.OnImGuiRender();
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
@@ -179,6 +202,12 @@ int main(void)
 
 			/* Poll for and process events */
 			glfwPollEvents();
+		}
+		//需要手动释放堆区内存
+		delete currentTest;
+		if (currentTest != testMenu)
+		{
+			delete testMenu;
 		}
 	}
 
