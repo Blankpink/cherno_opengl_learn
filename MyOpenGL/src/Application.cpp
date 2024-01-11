@@ -20,6 +20,7 @@
 
 // #include "tests/Test.h"
 #include "tests/TestClearColor.h"
+#include "tests/TestTexture2D.h"
 
 
 struct ShaderProgramSource
@@ -117,9 +118,7 @@ int main(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
-	/* Create a windowed mode window and its OpenGL context */
 	window = glfwCreateWindow(960, 540, "Hello World", NULL, NULL);
 	if (!window)
 	{
@@ -127,10 +126,9 @@ int main(void)
 		return -1;
 	}
 
-	/* Make the window's context current */
+
 	glfwMakeContextCurrent(window);
 
-	//设置刷新率
 	glfwSwapInterval(1);
 
 	if (glewInit() != GLEW_OK)
@@ -142,13 +140,11 @@ int main(void)
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
 		Renderer renderer;
 
-		// Setup ImGui binding
 		ImGui::CreateContext();
 		ImGui_ImplGlfwGL3_Init(window, true);
-		// Setup style
+
 		ImGui::StyleColorsDark();
 		ImGui::StyleColorsClassic();
 
@@ -157,21 +153,13 @@ int main(void)
 		currentTest = testMenu;
 
 		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+		testMenu->RegisterTest<test::TestTexture2D>("Texture2D");
 
 
-		//test::TestClearColor test;
-
-
-		//glViewport(0, 0, 640, 480);
-
-		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
 		{
 			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 			renderer.clear();
-
-			//test.OnUpdate(0.0f);
-			//test.OnRender();
 
 			ImGui_ImplGlfwGL3_NewFrame();
 
@@ -191,19 +179,14 @@ int main(void)
 				ImGui::End();
 			}
 
-
-			//test.OnImGuiRender();
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
 
-			/* Swap front and back buffers */
 			glfwSwapBuffers(window);
-
-			/* Poll for and process events */
 			glfwPollEvents();
 		}
-		//需要手动释放堆区内存
+		
 		delete currentTest;
 		if (currentTest != testMenu)
 		{
