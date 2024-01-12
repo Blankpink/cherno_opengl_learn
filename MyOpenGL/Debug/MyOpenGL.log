@@ -1,10 +1,2 @@
-﻿  TestClearColor.cpp
-  TestTexture2D.cpp
-  Texture.cpp
-  Application.cpp
-  IndexBuffer.cpp
-  Renderer.cpp
-  Shader.cpp
-  VertexBuffer.cpp
-  正在生成代码...
+﻿  Texture.cpp
   MyOpenGL.vcxproj -> D:\Study\OpenGL\OpenGL_Learn\Debug\MyOpenGL.exe

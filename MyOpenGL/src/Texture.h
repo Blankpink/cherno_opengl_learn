@@ -18,4 +18,8 @@ public:
 
 	inline int GetWidth() const { return m_Width; }
 	inline int GetHeight() const { return m_Height; }
+
+	unsigned int texture1;
+	unsigned int texture2;
+
 };

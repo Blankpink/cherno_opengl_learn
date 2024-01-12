@@ -44,11 +44,18 @@ void Shader::SetUniform1i(const std::string& name, int value)
 	GLCall(glUniform1i(GetUniformLocation(name), value));
 }
 
+void Shader::SetUniform1i2(const std::string& name, int *samplers)
+{
+	glUniform1iv(GetUniformLocation(name), 2, samplers);
+}
+
 void Shader::SetUniformMat4f(const std::string& name, const glm::mat4& matrix)
 {
 	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
 }
 
+
+//好像之前cherno就写好了，今天才解释为什么这样写
 // int Shader::GetUniformLocation(const std::string& name)
 //{
 //	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())

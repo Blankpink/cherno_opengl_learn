@@ -158,7 +158,7 @@ int main(void)
 
 		while (!glfwWindowShouldClose(window))
 		{
-			glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+			glClearColor(0.1f, 0.0f, 0.0f, 1.0f);
 			renderer.clear();
 
 			ImGui_ImplGlfwGL3_NewFrame();
